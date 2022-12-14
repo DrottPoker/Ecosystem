@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour
 {
 
-    //comment bu Johan
+   
 
 
     public Camera camera;
