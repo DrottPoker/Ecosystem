@@ -170,7 +170,7 @@ public class CreatureBehavior : MonoBehaviour
 
         if (hungry == false && hunting == false && fleeing == false)
         {
-            //fleeing = false;
+            //fleeing = false; //sdhifgsadbjhgakhbj
             RandomWandering();
         }
         
