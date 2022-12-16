@@ -8,10 +8,13 @@ public class CreatureBehavior : MonoBehaviour
     public CreatureManager CreatureManager;
 
     public GameObject foodOnDeath;
-
     
-    public GameObject closestUnoccupiedFood;
     public GameObject currentTarget;
+
+    public GameObject closestUnoccupiedFood;
+    float distanceToCurrentUnoccupaiedFood = Mathf.Infinity;
+    float distanceToClosestPrey = Mathf.Infinity;
+    float distanceToClosestPreditor = Mathf.Infinity;
 
     //public List<Collider2D> allColldersList = new List<Collider2D>();
     public Collider2D[] allColliders;
@@ -239,38 +242,81 @@ public class CreatureBehavior : MonoBehaviour
         //allColldersList.AddRange(allColliders);
         
 
-        Debug.Log("hej");
-        if(allColliders != null)
+        if (allColliders != null)
         {
+            
             foreach (Collider2D currentCollider in allColliders)
             {
-                //float distanceToCurrentTarget = Vector2.Distance(this.transform.position, );
+
 
                 if (currentCollider.gameObject.tag == "Food")
                 {
+                    float distanceToFood = Vector2.Distance(this.transform.position, currentCollider.transform.position);
+
                     //find closest plant
                     if (CreatureManager.isPreditor == false && currentCollider.gameObject.GetComponent<Food>().foodType == "Plant")
                     {
-
-                        float distanceToFood = (currentCollider.transform.position - this.transform.position).sqrMagnitude;
-                        if (distanceToFood < distanceToCurrentTarget && currentCollider.gameObject.GetComponent<Food>().Occupier == null || currentCollider.gameObject.GetComponent<Food>().Occupier == this.gameObject)
+       
+                        if (closestUnoccupiedFood != null)
                         {
-                            distanceToCurrentTarget = distanceToFood;
-                            closestUnoccupiedFood = currentCollider.gameObject;
-                            continue;
+                            distanceToCurrentUnoccupaiedFood = Vector2.Distance(this.transform.position, closestUnoccupiedFood.transform.position);
+
+                            if(closestUnoccupiedFood.GetComponent<Food>().Occupier == null || closestUnoccupiedFood.gameObject.GetComponent<Food>().Occupier == this.gameObject)
+                            {
+                                if (currentCollider.gameObject.GetComponent<Food>().Occupier == null || currentCollider.gameObject.GetComponent<Food>().Occupier == this.gameObject)
+                                {
+                                    if (distanceToFood < distanceToCurrentUnoccupaiedFood && currentCollider.gameObject.GetComponent<Food>().Occupier != this.gameObject)
+                                    {
+                                        distanceToCurrentUnoccupaiedFood = distanceToFood;
+                                        closestUnoccupiedFood = currentCollider.gameObject;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        //Debug.Log("misan");
+                                        //distanceToCurrentUnoccupaiedFood = distanceToFood;
+                                        //closestUnoccupiedFood = currentCollider.gameObject;
+                                        continue;
+                                    }
+
+                                }
+                                else
+                                {
+                                    //distanceToCurrentUnoccupaiedFood = distanceToFood;
+                                    //closestUnoccupiedFood = currentCollider.gameObject;
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                closestUnoccupiedFood = null;
+                                //distanceToCurrentUnoccupaiedFood = distanceToFood;
+                                continue;
+                            }
+                            
+
                         }
                         else
                         {
-                            //closestUnoccupiedFood = null;
+                            distanceToCurrentUnoccupaiedFood = distanceToFood;
+                            closestUnoccupiedFood = currentCollider.gameObject;
+                            continue;
                         }
+                                           
+
                     }
                     //find closest meat
                     if (CreatureManager.isPreditor == true && currentCollider.gameObject.GetComponent<Food>().foodType == "Meat")
                     {
-                        float distanceToFood = (currentCollider.transform.position - this.transform.position).sqrMagnitude;
-                        if (distanceToFood < distanceToCurrentTarget && (currentCollider.gameObject.GetComponent<Food>().Occupier == null || currentCollider.gameObject.GetComponent<Food>().Occupier == this.gameObject))
+                        if (closestUnoccupiedFood != null)
                         {
-                            distanceToCurrentTarget = distanceToFood;
+                            distanceToCurrentUnoccupaiedFood = Vector2.Distance(this.transform.position, closestUnoccupiedFood.transform.position);
+
+                        }
+
+                        if (distanceToFood < distanceToCurrentUnoccupaiedFood && (currentCollider.gameObject.GetComponent<Food>().Occupier == null || currentCollider.gameObject.GetComponent<Food>().Occupier == this.gameObject))
+                        {
+                            distanceToCurrentUnoccupaiedFood = distanceToFood;
                             closestUnoccupiedFood = currentCollider.gameObject;
                             //Debug.Log("hej");
                             continue;
@@ -284,22 +330,25 @@ public class CreatureBehavior : MonoBehaviour
                 else if(currentCollider.gameObject.tag == "Creature")
                 {
                   
-                    //float distanceToClosestPreditor = Mathf.Infinity;
+                    
 
                  
                     //Find closest Prey
                     if (currentCollider.gameObject != this.gameObject && currentCollider.gameObject.GetComponent<CreatureManager>().isPreditor == false)
                     {
+                       
                         if (closestPrey == null)
                         {
                             closestPrey = currentCollider.gameObject;
                             continue;
                         }
 
+                        
                         float distanceToPrey = (currentCollider.gameObject.transform.position - this.transform.position).sqrMagnitude;
-                        if(distanceToPrey < distanceToCurrentTarget)
+
+                        if(distanceToPrey < distanceToClosestPrey)
                         {
-                            distanceToCurrentTarget = distanceToPrey;
+                            distanceToClosestPrey = distanceToPrey;
                             closestPrey = currentCollider.gameObject;
                             continue;
                         }
@@ -308,16 +357,18 @@ public class CreatureBehavior : MonoBehaviour
                     //Find closest Preditor
                     if (currentCollider.gameObject != this.gameObject && currentCollider.gameObject.GetComponent<CreatureManager>().isPreditor == true)
                     {
+                       
                         if (closestPreditor == null)
                         {
                             closestPreditor = currentCollider.gameObject;
                             continue;
                         }
 
+                        
                         float distanceToPreditor = (currentCollider.gameObject.transform.position - this.transform.position).sqrMagnitude;
-                        if (distanceToPreditor < distanceToCurrentTarget)
+                        if (distanceToPreditor < distanceToClosestPreditor)
                         {
-                            distanceToCurrentTarget = distanceToPreditor;
+                            distanceToClosestPreditor = distanceToPreditor;
                             closestPreditor = currentCollider.gameObject;
                             continue;
                         }
@@ -331,8 +382,8 @@ public class CreatureBehavior : MonoBehaviour
         
         if (closestUnoccupiedFood != null && hungry == true && fleeing == false)
         {
-            currentTarget = closestUnoccupiedFood;
-            GoTowardsTarget();
+            //currentTarget = closestUnoccupiedFood;
+            GoTowardsFoodInRadius();
 
         }
         else
@@ -342,7 +393,7 @@ public class CreatureBehavior : MonoBehaviour
     }
     
     //going towards the food
-    public void GoTowardsTarget()
+    public void GoTowardsFoodInRadius()
     {
         if (closestUnoccupiedFood != null)
         {

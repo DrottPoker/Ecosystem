@@ -5,9 +5,6 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour
 {
 
-   
-
-
     public Camera camera;
 
     public float scrollSensitivty;
