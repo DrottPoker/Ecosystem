@@ -167,7 +167,8 @@ public class CreatureBehavior : MonoBehaviour
             GiveBirth();
             //return;
         }
-        else
+
+        if (hungry == false && hunting == false && fleeing == false)
         {
             //fleeing = false;
             RandomWandering();
