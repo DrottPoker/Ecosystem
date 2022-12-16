@@ -274,28 +274,20 @@ public class CreatureBehavior : MonoBehaviour
                                     }
                                     else
                                     {
-                                        //Debug.Log("misan");
-                                        //distanceToCurrentUnoccupaiedFood = distanceToFood;
-                                        //closestUnoccupiedFood = currentCollider.gameObject;
                                         continue;
                                     }
 
                                 }
                                 else
                                 {
-                                    //distanceToCurrentUnoccupaiedFood = distanceToFood;
-                                    //closestUnoccupiedFood = currentCollider.gameObject;
                                     continue;
                                 }
                             }
                             else
                             {
                                 closestUnoccupiedFood = null;
-                                //distanceToCurrentUnoccupaiedFood = distanceToFood;
                                 continue;
                             }
-                            
-
                         }
                         else
                         {
@@ -313,18 +305,38 @@ public class CreatureBehavior : MonoBehaviour
                         {
                             distanceToCurrentUnoccupaiedFood = Vector2.Distance(this.transform.position, closestUnoccupiedFood.transform.position);
 
-                        }
+                            if (closestUnoccupiedFood.GetComponent<Food>().Occupier == null || closestUnoccupiedFood.gameObject.GetComponent<Food>().Occupier == this.gameObject)
+                            {
+                                if (currentCollider.gameObject.GetComponent<Food>().Occupier == null || currentCollider.gameObject.GetComponent<Food>().Occupier == this.gameObject)
+                                {
+                                    if (distanceToFood < distanceToCurrentUnoccupaiedFood && currentCollider.gameObject.GetComponent<Food>().Occupier != this.gameObject)
+                                    {
+                                        distanceToCurrentUnoccupaiedFood = distanceToFood;
+                                        closestUnoccupiedFood = currentCollider.gameObject;
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
 
-                        if (distanceToFood < distanceToCurrentUnoccupaiedFood && (currentCollider.gameObject.GetComponent<Food>().Occupier == null || currentCollider.gameObject.GetComponent<Food>().Occupier == this.gameObject))
-                        {
-                            distanceToCurrentUnoccupaiedFood = distanceToFood;
-                            closestUnoccupiedFood = currentCollider.gameObject;
-                            //Debug.Log("hej");
-                            continue;
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                closestUnoccupiedFood = null;
+                                continue;
+                            }
                         }
                         else
                         {
-                            //closestUnoccupiedFood = null;
+                            distanceToCurrentUnoccupaiedFood = distanceToFood;
+                            closestUnoccupiedFood = currentCollider.gameObject;
+                            continue;
                         }
                     }
                 }
